@@ -4,4 +4,18 @@
 		<polygon id="playerDef" points="0,0 1,.5 0,1" />
 	</defs>
 	<use id="player" transform="scale(15)" xlink:href="#playerDef" />
+	<script type="text/javascript">
+		<![CDATA[
+			document.addEventListener('keydown', function (event) {
+				switch (event.keyIdentifier) {
+					case 'Down':
+					case 'Up':
+					case 'Left':
+					case 'Right':
+						event.preventDefault()
+					break;
+				}
+			})
+		]]>
+	</script>
 </svg>
