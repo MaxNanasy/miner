@@ -9,6 +9,7 @@
 			// TODO Rows and columns should fill screen
 			const rowCount = 32, columnCount = 32
 			const tileElements = []
+			const playerPosition = { row: 0, column: 0 }
 			for (var rowIndex = 0; rowIndex < rowCount; rowIndex ++) {
 				var row = []
 					for (var columnIndex = 0; columnIndex < columnCount; columnIndex ++) {
@@ -20,19 +21,35 @@
 				tileElements.push(row)
 			}
 
-			tileElements[0][0].appendChild(use('#playerDef'))
+			const playerElement = use('#playerDef')
+			positionElement(playerElement, playerPosition)
 
 			document.addEventListener('keydown', function (event) {
-				switch (event.keyIdentifier) {
-					case 'Down':
-					case 'Up':
-					case 'Left':
-					case 'Right':
-						event.preventDefault()
-					break;
+				// FIXME Handle if at edge of tiles
+				const movementKeyIdToHandlerMap = {
+					'Up': function () {
+						playerPosition.row --
+					},
+					'Down': function () {
+						playerPosition.row ++
+					},
+					'Left': function () {
+						playerPosition.column --
+					},
+					'Right': function () {
+						playerPosition.column ++
+					}
+				}
+				if (movementKeyIdToHandlerMap.hasOwnProperty(event.keyIdentifier)) {
+					event.preventDefault()
+					movementKeyIdToHandlerMap[event.keyIdentifier]()
+					positionElement(playerElement, playerPosition)
 				}
 			})
 
+			function positionElement(element, position) {
+				tileElements[position.row][position.column].appendChild(element)
+			}
 			function use(href) {
 				const useElement = document.createElementNS('http://www.w3.org/2000/svg', 'use')
 					useElement.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', href)
