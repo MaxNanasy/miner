@@ -3,9 +3,25 @@
 	<defs>
 		<polygon id="playerDef" points="0,0 1,.5 0,1" />
 	</defs>
-	<use id="player" transform="scale(16)" xlink:href="#playerDef" />
+	<g id="tiles" transform="scale(16)" />
 	<script type="text/javascript">
 		<![CDATA[
+			// TODO Rows and columns should fill screen
+			const rowCount = 32, columnCount = 32
+			const tileElements = []
+			for (var rowIndex = 0; rowIndex < rowCount; rowIndex ++) {
+				var row = []
+					for (var columnIndex = 0; columnIndex < columnCount; columnIndex ++) {
+						var tileElement = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+							tileElement.setAttribute('transform', 'translate(' + columnIndex + ', ' + rowIndex + ')')
+						document.getElementById('tiles').appendChild(tileElement)
+						row.push(tileElement)
+					}
+				tileElements.push(row)
+			}
+
+			tileElements[0][0].appendChild(use('#playerDef'))
+
 			document.addEventListener('keydown', function (event) {
 				switch (event.keyIdentifier) {
 					case 'Down':
@@ -16,6 +32,12 @@
 					break;
 				}
 			})
+
+			function use(href) {
+				const useElement = document.createElementNS('http://www.w3.org/2000/svg', 'use')
+					useElement.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', href)
+				return useElement
+			}
 		]]>
 	</script>
 </svg>
