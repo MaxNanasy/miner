@@ -25,19 +25,18 @@
 			positionElement(playerElement, playerPosition)
 
 			document.addEventListener('keydown', function (event) {
-				// FIXME Handle if at edge of tiles
 				const movementKeyIdToHandlerMap = {
 					'Up': function () {
-						playerPosition.row --
+						playerPosition.row = Math.max(playerPosition.row - 1, 0)
 					},
 					'Down': function () {
-						playerPosition.row ++
+						playerPosition.row = Math.min(playerPosition.row + 1, rowCount - 1)
 					},
 					'Left': function () {
-						playerPosition.column --
+						playerPosition.column = Math.max(playerPosition.column - 1, 0)
 					},
 					'Right': function () {
-						playerPosition.column ++
+						playerPosition.column = Math.min(playerPosition.column + 1, columnCount - 1)
 					}
 				}
 				if (movementKeyIdToHandlerMap.hasOwnProperty(event.keyIdentifier)) {
