@@ -3,19 +3,57 @@
 	<defs>
 		<polygon id="playerDef" points="0,0 1,.5 0,1" />
 	</defs>
-	<use id="player" transform="scale(16)" xlink:href="#playerDef" />
+	<g id="tiles" transform="scale(16)" />
 	<script type="text/javascript">
 		<![CDATA[
+			// TODO Rows and columns should fill screen
+			const rowCount = 32, columnCount = 32
+			const tileElements = []
+			const playerPosition = { row: 0, column: 0 }
+			for (var rowIndex = 0; rowIndex < rowCount; rowIndex ++) {
+				var row = []
+					for (var columnIndex = 0; columnIndex < columnCount; columnIndex ++) {
+						var tileElement = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+							tileElement.setAttribute('transform', 'translate(' + columnIndex + ', ' + rowIndex + ')')
+						document.getElementById('tiles').appendChild(tileElement)
+						row.push(tileElement)
+					}
+				tileElements.push(row)
+			}
+
+			const playerElement = use('#playerDef')
+			positionElement(playerElement, playerPosition)
+
 			document.addEventListener('keydown', function (event) {
-				switch (event.keyIdentifier) {
-					case 'Down':
-					case 'Up':
-					case 'Left':
-					case 'Right':
-						event.preventDefault()
-					break;
+				const movementKeyIdToHandlerMap = {
+					'Up': function () {
+						playerPosition.row = Math.max(playerPosition.row - 1, 0)
+					},
+					'Down': function () {
+						playerPosition.row = Math.min(playerPosition.row + 1, rowCount - 1)
+					},
+					'Left': function () {
+						playerPosition.column = Math.max(playerPosition.column - 1, 0)
+					},
+					'Right': function () {
+						playerPosition.column = Math.min(playerPosition.column + 1, columnCount - 1)
+					}
+				}
+				if (movementKeyIdToHandlerMap.hasOwnProperty(event.keyIdentifier)) {
+					event.preventDefault()
+					movementKeyIdToHandlerMap[event.keyIdentifier]()
+					positionElement(playerElement, playerPosition)
 				}
 			})
+
+			function positionElement(element, position) {
+				tileElements[position.row][position.column].appendChild(element)
+			}
+			function use(href) {
+				const useElement = document.createElementNS('http://www.w3.org/2000/svg', 'use')
+					useElement.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', href)
+				return useElement
+			}
 		]]>
 	</script>
 </svg>
